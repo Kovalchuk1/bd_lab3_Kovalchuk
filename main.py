@@ -2,7 +2,7 @@ import psycopg2
 import matplotlib.pyplot as plt
 
 username = 'postgres'
-password = 'lila****'
+password = '****'
 database = 'channels'
 host = 'localhost'
 port = '5432'
