@@ -3,7 +3,7 @@ import decimal
 import psycopg2
 import psycopg2.extras
 username = 'postgres'
-password = 'lila****'
+password = '****'
 database = 'channels'
 host = 'localhost'
 port = '5432'
