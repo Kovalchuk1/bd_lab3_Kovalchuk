@@ -2,7 +2,7 @@ import psycopg2
 import json
 
 username = 'postgres'
-password = 'lila****'
+password = '****'
 database = 'channels'
 host = 'localhost'
 port = '5432'
