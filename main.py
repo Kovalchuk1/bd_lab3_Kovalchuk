@@ -62,13 +62,13 @@ with conn:
     plt.show()
 
     x.clear()
-
+    y.clear()
     cur.execute('Drop view if exists MoreAverageChannelViews')
     cur.execute(query_3)
     cur.execute('SELECT * FROM MoreAverageChannelViews')
     for row in cur:
         y.append(row[1])
-        x.append(row[0])
+        x.append(row[0].strip())
     plt.bar(x, y, color='yellow', edgecolor="k")
     plt.title('Channel views that are greater than the average number of views of all channels')
     plt.ylabel('Number of views')
