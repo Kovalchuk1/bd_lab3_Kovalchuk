@@ -1,3 +1,4 @@
+
 import csv
 import decimal
 import psycopg2
@@ -11,7 +12,7 @@ port = '5432'
 INPUT_CSV_FILE = 'top50.csv'
 
 query_1 = '''
-INSERT INTO channel (ch_name, ch_views, ch_subscribers,id_genre, id_country) VALUES (%s, %s, %s, %s, %s)
+INSERT INTO channel (ch_name, id_views, id_genre, id_country) VALUES (%s, %s, %s, %s)
 '''
 query_2 = '''
 INSERT INTO country (id_country, country_name) VALUES (%s, %s)
@@ -51,6 +52,10 @@ query_11 = '''
 INSERT INTO genre select id_genre, genre_name from newgenre
 '''
 
+query_12 = '''
+INSERT INTO viewss (id_views, views_v, date_first, date_last) VALUES (%s, %s, %s, %s)
+'''
+
 conn = psycopg2.connect(user=username, password=password, dbname=database)
 
 with conn:
@@ -62,6 +67,8 @@ with conn:
 
     cur6 = conn.cursor()
     cur7 = conn.cursor()
+    cur8 = conn.cursor()
+    cur9 = conn.cursor()
 
     #cur2.execute(query_5)
     #cur3.execute(query_4)
@@ -90,13 +97,25 @@ with conn:
             cur6.execute(query_10)
             cur6.execute(query_11)
             cur7.execute(query_9)
-
+    with open(INPUT_CSV_FILE, 'r') as inf:
+        reader = csv.DictReader(inf, delimiter=',')
+        for idx, row in enumerate(reader):
+            id_views = idx + 1
+            views_v = row['Total Views(Till End Of The Week)']
+            date_first = '2022-09-01'
+            date_last = '2022-10-01'
+            values5 = (id_views, views_v, date_first, date_last)
+            cur8.execute(query_12, values5)
     with open(INPUT_CSV_FILE, 'r') as inf:
         reader = csv.DictReader(inf, delimiter=',')
         for idx, row in enumerate(reader):
             ch_name = row['Channel']
-            ch_views = row['Total Views(Till End Of The Week)']
-            ch_subscribers = row['Number of Subscribers(In Millions)']
+
+            id_views = row['Total Views(Till End Of The Week)']
+            if not id_views:
+                continue
+            cur9.execute('select id_views from viewss where views_v = %s', (id_views,))
+            id_views = cur9.fetchone()[0]
 
             id_genre = row['Channel Type']
             if not id_genre:
@@ -111,7 +130,7 @@ with conn:
             id_country = cur4.fetchone()[0]
 
             name_c = row['Country']
-            values2 = (ch_name, ch_views, ch_subscribers, id_genre, id_country)
+            values2 = (ch_name, id_views, id_genre, id_country)
             cur.execute(query_1, values2)
 
 
