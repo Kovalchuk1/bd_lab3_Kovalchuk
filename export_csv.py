@@ -13,6 +13,7 @@ TABLES = [
     'channel',
     'genre',
     'country',
+    'views'
 ]
 
 conn = psycopg2.connect(user=username, password=password, dbname=database)
